@@ -41,6 +41,8 @@ class PagesLoader {
     private final RectF thumbnailRect = new RectF(0, 0, 1, 1);
     private final int preloadOffset;
 
+    private boolean usePartDraw = true;
+
     private class Holder {
         int row;
         int col;
@@ -117,7 +119,8 @@ class PagesLoader {
     /**
      * calculate the render range of each page
      */
-    private List<RenderRange> getRenderRangeList(float firstXOffset, float firstYOffset, float lastXOffset, float lastYOffset) {
+    private List<RenderRange> getRenderRangeList(float firstXOffset, float firstYOffset, float lastXOffset,
+                                                 float lastYOffset) {
 
         float fixedFirstXOffset = -MathUtils.max(firstXOffset, 0);
         float fixedFirstYOffset = -MathUtils.max(firstYOffset, 0);
@@ -205,17 +208,26 @@ class PagesLoader {
 
             // calculate the row,col of the point in the leftTop and rightBottom
             if (pdfView.isSwipeVertical()) {
-                range.leftTop.row = MathUtils.floor(Math.abs(pageFirstYOffset - pdfView.pdfFile.getPageOffset(range.page, pdfView.getZoom())) / rowHeight);
+                range.leftTop.row = MathUtils.floor(
+                        Math.abs(pageFirstYOffset - pdfView.pdfFile.getPageOffset(range.page, pdfView.getZoom())) /
+                                rowHeight);
                 range.leftTop.col = MathUtils.floor(MathUtils.min(pageFirstXOffset - secondaryOffset, 0) / colWidth);
 
-                range.rightBottom.row = MathUtils.ceil(Math.abs(pageLastYOffset - pdfView.pdfFile.getPageOffset(range.page, pdfView.getZoom())) / rowHeight);
+                range.rightBottom.row = MathUtils.ceil(
+                        Math.abs(pageLastYOffset - pdfView.pdfFile.getPageOffset(range.page, pdfView.getZoom())) /
+                                rowHeight);
                 range.rightBottom.col = MathUtils.floor(MathUtils.min(pageLastXOffset - secondaryOffset, 0) / colWidth);
             } else {
-                range.leftTop.col = MathUtils.floor(Math.abs(pageFirstXOffset - pdfView.pdfFile.getPageOffset(range.page, pdfView.getZoom())) / colWidth);
+                range.leftTop.col = MathUtils.floor(
+                        Math.abs(pageFirstXOffset - pdfView.pdfFile.getPageOffset(range.page, pdfView.getZoom())) /
+                                colWidth);
                 range.leftTop.row = MathUtils.floor(MathUtils.min(pageFirstYOffset - secondaryOffset, 0) / rowHeight);
 
-                range.rightBottom.col = MathUtils.floor(Math.abs(pageLastXOffset - pdfView.pdfFile.getPageOffset(range.page, pdfView.getZoom())) / colWidth);
-                range.rightBottom.row = MathUtils.floor(MathUtils.min(pageLastYOffset - secondaryOffset, 0) / rowHeight);
+                range.rightBottom.col = MathUtils.floor(
+                        Math.abs(pageLastXOffset - pdfView.pdfFile.getPageOffset(range.page, pdfView.getZoom())) /
+                                colWidth);
+                range.rightBottom.row = MathUtils.floor(
+                        MathUtils.min(pageLastYOffset - secondaryOffset, 0) / rowHeight);
             }
 
             renderRanges.add(range);
@@ -238,11 +250,21 @@ class PagesLoader {
             loadThumbnail(range.page);
         }
 
-        for (RenderRange range : rangeList) {
-            calculatePartSize(range.gridSize);
-            parts += loadPage(range.page, range.leftTop.row, range.rightBottom.row, range.leftTop.col, range.rightBottom.col, CACHE_SIZE - parts);
-            if (parts >= CACHE_SIZE) {
-                break;
+        if (usePartDraw) {
+
+            for (RenderRange range : rangeList) {
+                calculatePartSize(range.gridSize);
+                parts += loadPage(
+                        range.page,
+                        range.leftTop.row,
+                        range.rightBottom.row,
+                        range.leftTop.col,
+                        range.rightBottom.col,
+                        CACHE_SIZE - parts
+                );
+                if (parts >= CACHE_SIZE) {
+                    break;
+                }
             }
         }
 
@@ -285,9 +307,15 @@ class PagesLoader {
 
         if (renderWidth > 0 && renderHeight > 0) {
             if (!pdfView.cacheManager.upPartIfContained(page, pageRelativeBounds, cacheOrder)) {
-                pdfView.renderingHandler.addRenderingTask(page, renderWidth, renderHeight,
-                        pageRelativeBounds, false, cacheOrder, pdfView.isBestQuality(),
-                        pdfView.isAnnotationRendering());
+                pdfView.renderingHandler.addRenderingTask(page,
+                                                          renderWidth,
+                                                          renderHeight,
+                                                          pageRelativeBounds,
+                                                          false,
+                                                          cacheOrder,
+                                                          pdfView.isBestQuality(),
+                                                          pdfView.isAnnotationRendering()
+                );
             }
 
             cacheOrder++;
@@ -302,8 +330,9 @@ class PagesLoader {
         float thumbnailHeight = pageSize.getHeight() * Constants.THUMBNAIL_RATIO;
         if (!pdfView.cacheManager.containsThumbnail(page, thumbnailRect)) {
             pdfView.renderingHandler.addRenderingTask(page,
-                    thumbnailWidth, thumbnailHeight, thumbnailRect,
-                    true, 0, pdfView.isBestQuality(), pdfView.isAnnotationRendering());
+                                                      thumbnailWidth, thumbnailHeight, thumbnailRect,
+                                                      true, 0, pdfView.isBestQuality(), pdfView.isAnnotationRendering()
+            );
         }
     }
 
@@ -313,5 +342,9 @@ class PagesLoader {
         yOffset = -MathUtils.max(pdfView.getCurrentYOffset(), 0);
 
         loadVisible();
+    }
+
+    public void enablePartDraw(boolean usePartDraw) {
+        this.usePartDraw = usePartDraw;
     }
 }

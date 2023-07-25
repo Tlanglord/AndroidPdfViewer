@@ -16,6 +16,7 @@
 package com.github.barteksc.pdfviewer.source;
 
 import android.content.Context;
+import android.graphics.pdf.PdfRenderer;
 import android.os.ParcelFileDescriptor;
 
 import com.shockwave.pdfium.PdfDocument;
@@ -37,4 +38,11 @@ public class FileSource implements DocumentSource {
         ParcelFileDescriptor pfd = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
         return core.newDocument(pfd, password);
     }
+
+    @Override
+    public PdfRenderer createPdfRenderer(Context context, String password) throws Exception {
+        ParcelFileDescriptor pfd = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
+        return new PdfRenderer(pfd);
+    }
+
 }

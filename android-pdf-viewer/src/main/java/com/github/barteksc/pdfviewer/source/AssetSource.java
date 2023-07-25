@@ -17,6 +17,7 @@ package com.github.barteksc.pdfviewer.source;
 
 
 import android.content.Context;
+import android.graphics.pdf.PdfRenderer;
 import android.os.ParcelFileDescriptor;
 
 import com.github.barteksc.pdfviewer.util.FileUtils;
@@ -40,4 +41,12 @@ public class AssetSource implements DocumentSource {
         ParcelFileDescriptor pfd = ParcelFileDescriptor.open(f, ParcelFileDescriptor.MODE_READ_ONLY);
         return core.newDocument(pfd, password);
     }
+
+    @Override
+    public PdfRenderer createPdfRenderer(Context context, String password) throws IOException {
+        File f = FileUtils.fileFromAsset(context, assetName);
+        ParcelFileDescriptor pfd = ParcelFileDescriptor.open(f, ParcelFileDescriptor.MODE_READ_ONLY);
+        return new PdfRenderer(pfd);
+    }
+
 }

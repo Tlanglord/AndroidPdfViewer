@@ -16,6 +16,7 @@
 package com.github.barteksc.pdfviewer.source;
 
 import android.content.Context;
+import android.graphics.pdf.PdfRenderer;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 
@@ -34,7 +35,16 @@ public class UriSource implements DocumentSource {
 
     @Override
     public PdfDocument createDocument(Context context, PdfiumCore core, String password) throws IOException {
-        ParcelFileDescriptor pfd = context.getContentResolver().openFileDescriptor(uri, "r");
+        ParcelFileDescriptor pfd = context.getContentResolver()
+                                          .openFileDescriptor(uri, "r");
         return core.newDocument(pfd, password);
+    }
+
+    @Override
+    public PdfRenderer createPdfRenderer(Context context, String password) throws Exception {
+        ParcelFileDescriptor pfd = context.getContentResolver()
+                                          .openFileDescriptor(uri, "r");
+        assert pfd != null;
+        return new PdfRenderer(pfd);
     }
 }

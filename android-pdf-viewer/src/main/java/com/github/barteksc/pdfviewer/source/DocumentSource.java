@@ -22,6 +22,6 @@ import com.shockwave.pdfium.PdfiumCore;
 
 import java.io.IOException;
 
-public interface DocumentSource {
+public interface DocumentSource extends INativeRendererSource {
     PdfDocument createDocument(Context context, PdfiumCore core, String password) throws IOException;
 }

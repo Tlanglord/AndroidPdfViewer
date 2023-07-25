@@ -34,6 +34,7 @@ import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
 import com.github.barteksc.pdfviewer.listener.OnPageErrorListener;
 import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
+import com.github.barteksc.pdfviewer.util.Constants;
 import com.github.barteksc.pdfviewer.util.FitPolicy;
 import com.shockwave.pdfium.PdfDocument;
 
@@ -49,8 +50,8 @@ import java.util.List;
 
 @EActivity(R.layout.activity_main)
 @OptionsMenu(R.menu.options)
-public class PDFViewActivity extends AppCompatActivity implements OnPageChangeListener, OnLoadCompleteListener,
-        OnPageErrorListener {
+public class PDFViewActivity extends AppCompatActivity
+        implements OnPageChangeListener, OnLoadCompleteListener, OnPageErrorListener {
 
     private static final String TAG = PDFViewActivity.class.getSimpleName();
 
@@ -73,15 +74,10 @@ public class PDFViewActivity extends AppCompatActivity implements OnPageChangeLi
 
     @OptionsItem(R.id.pickFile)
     void pickFile() {
-        int permissionCheck = ContextCompat.checkSelfPermission(this,
-                READ_EXTERNAL_STORAGE);
+        int permissionCheck = ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE);
 
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    new String[]{READ_EXTERNAL_STORAGE},
-                    PERMISSION_CODE
-            );
+            ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE}, PERMISSION_CODE);
 
             return;
         }
@@ -96,7 +92,8 @@ public class PDFViewActivity extends AppCompatActivity implements OnPageChangeLi
             startActivityForResult(intent, REQUEST_CODE);
         } catch (ActivityNotFoundException e) {
             //alert user that file manager not working
-            Toast.makeText(this, R.string.toast_pick_file_error, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.toast_pick_file_error, Toast.LENGTH_SHORT)
+                 .show();
         }
     }
 
@@ -114,30 +111,32 @@ public class PDFViewActivity extends AppCompatActivity implements OnPageChangeLi
     private void displayFromAsset(String assetFileName) {
         pdfFileName = assetFileName;
 
-        pdfView.fromAsset(SAMPLE_FILE)
-                .defaultPage(pageNumber)
-                .onPageChange(this)
-                .enableAnnotationRendering(true)
-                .onLoad(this)
-                .scrollHandle(new DefaultScrollHandle(this))
-                .spacing(10) // in dp
-                .onPageError(this)
-                .pageFitPolicy(FitPolicy.BOTH)
-                .load();
+        Constants.THUMBNAIL_RATIO = 1F;
+        pdfView.fromAsset(assetFileName)
+               .defaultPage(pageNumber)
+               .onPageChange(this)
+               .enableAnnotationRendering(false)
+               .onLoad(this)
+               .scrollHandle(new DefaultScrollHandle(this))
+               .spacing(10) // in dp
+               .onPageError(this)
+               .pageFitPolicy(FitPolicy.WIDTH)
+               .enableUseNativeRender(true)
+               .load();
     }
 
     private void displayFromUri(Uri uri) {
         pdfFileName = getFileName(uri);
 
         pdfView.fromUri(uri)
-                .defaultPage(pageNumber)
-                .onPageChange(this)
-                .enableAnnotationRendering(true)
-                .onLoad(this)
-                .scrollHandle(new DefaultScrollHandle(this))
-                .spacing(10) // in dp
-                .onPageError(this)
-                .load();
+               .defaultPage(pageNumber)
+               .onPageChange(this)
+               .enableAnnotationRendering(true)
+               .onLoad(this)
+               .scrollHandle(new DefaultScrollHandle(this))
+               .spacing(10) // in dp
+               .onPageError(this)
+               .load();
     }
 
     @OnActivityResult(REQUEST_CODE)
@@ -156,7 +155,8 @@ public class PDFViewActivity extends AppCompatActivity implements OnPageChangeLi
 
     public String getFileName(Uri uri) {
         String result = null;
-        if (uri.getScheme().equals("content")) {
+        if (uri.getScheme()
+               .equals("content")) {
             Cursor cursor = getContentResolver().query(uri, null, null, null, null);
             try {
                 if (cursor != null && cursor.moveToFirst()) {
@@ -212,8 +212,7 @@ public class PDFViewActivity extends AppCompatActivity implements OnPageChangeLi
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
                                            @NonNull int[] grantResults) {
         if (requestCode == PERMISSION_CODE) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 launchPicker();
             }
         }

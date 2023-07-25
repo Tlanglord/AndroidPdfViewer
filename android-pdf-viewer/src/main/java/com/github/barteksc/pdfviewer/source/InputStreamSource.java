@@ -16,11 +16,15 @@
 package com.github.barteksc.pdfviewer.source;
 
 import android.content.Context;
+import android.graphics.pdf.PdfRenderer;
+import android.os.ParcelFileDescriptor;
 
 import com.github.barteksc.pdfviewer.util.Util;
 import com.shockwave.pdfium.PdfDocument;
 import com.shockwave.pdfium.PdfiumCore;
 
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -36,4 +40,26 @@ public class InputStreamSource implements DocumentSource {
     public PdfDocument createDocument(Context context, PdfiumCore core, String password) throws IOException {
         return core.newDocument(Util.toByteArray(inputStream), password);
     }
+
+    @Override
+    public PdfRenderer createPdfRenderer(Context context, String password) throws Exception {
+
+        String tempFileName = "temp_file";
+        FileOutputStream fileOutputStream = context.openFileOutput(tempFileName, Context.MODE_PRIVATE);
+
+        byte[] buffer = new byte[1024];
+        int bytesRead;
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            fileOutputStream.write(buffer, 0, bytesRead);
+        }
+
+        fileOutputStream.close();
+        FileDescriptor fd = context.openFileInput(tempFileName)
+                                   .getFD();
+
+        ParcelFileDescriptor pfd = ParcelFileDescriptor.dup(fd);
+        return new PdfRenderer(pfd);
+
+    }
+
 }

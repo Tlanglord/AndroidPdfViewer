@@ -53,8 +53,18 @@ class RenderingHandler extends Handler {
         this.pdfView = pdfView;
     }
 
-    void addRenderingTask(int page, float width, float height, RectF bounds, boolean thumbnail, int cacheOrder, boolean bestQuality, boolean annotationRendering) {
-        RenderingTask task = new RenderingTask(width, height, bounds, page, thumbnail, cacheOrder, bestQuality, annotationRendering);
+    void addRenderingTask(int page, float width, float height, RectF bounds, boolean thumbnail, int cacheOrder,
+                          boolean bestQuality, boolean annotationRendering) {
+        RenderingTask task = new RenderingTask(
+                width,
+                height,
+                bounds,
+                page,
+                thumbnail,
+                cacheOrder,
+                bestQuality,
+                annotationRendering
+        );
         Message msg = obtainMessage(MSG_RENDER_TASK, task);
         sendMessage(msg);
     }
@@ -73,7 +83,8 @@ class RenderingHandler extends Handler {
                         }
                     });
                 } else {
-                    part.getRenderedBitmap().recycle();
+                    part.getRenderedBitmap()
+                        .recycle();
                 }
             }
         } catch (final PageRenderingException ex) {
@@ -87,7 +98,7 @@ class RenderingHandler extends Handler {
     }
 
     private PagePart proceed(RenderingTask renderingTask) throws PageRenderingException {
-        PdfFile pdfFile = pdfView.pdfFile;
+        AbsPdfFile pdfFile = pdfView.pdfFile;
         pdfFile.openPage(renderingTask.page);
 
         int w = Math.round(renderingTask.width);
@@ -99,7 +110,11 @@ class RenderingHandler extends Handler {
 
         Bitmap render;
         try {
-            render = Bitmap.createBitmap(w, h, renderingTask.bestQuality ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565);
+            render = Bitmap.createBitmap(
+                    w,
+                    h,
+                    renderingTask.bestQuality ? Bitmap.Config.ARGB_8888 : Bitmap.Config.ARGB_4444
+            );
         } catch (IllegalArgumentException e) {
             Log.e(TAG, "Cannot create bitmap", e);
             return null;
@@ -109,8 +124,9 @@ class RenderingHandler extends Handler {
         pdfFile.renderPageBitmap(render, renderingTask.page, roundedRenderBounds, renderingTask.annotationRendering);
 
         return new PagePart(renderingTask.page, render,
-                renderingTask.bounds, renderingTask.thumbnail,
-                renderingTask.cacheOrder);
+                            renderingTask.bounds, renderingTask.thumbnail,
+                            renderingTask.cacheOrder
+        );
     }
 
     private void calculateBounds(int width, int height, RectF pageSliceBounds) {
@@ -147,7 +163,8 @@ class RenderingHandler extends Handler {
 
         boolean annotationRendering;
 
-        RenderingTask(float width, float height, RectF bounds, int page, boolean thumbnail, int cacheOrder, boolean bestQuality, boolean annotationRendering) {
+        RenderingTask(float width, float height, RectF bounds, int page, boolean thumbnail, int cacheOrder,
+                      boolean bestQuality, boolean annotationRendering) {
             this.page = page;
             this.width = width;
             this.height = height;

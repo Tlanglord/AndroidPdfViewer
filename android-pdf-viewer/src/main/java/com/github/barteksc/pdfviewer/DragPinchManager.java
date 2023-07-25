@@ -86,7 +86,7 @@ class DragPinchManager implements GestureDetector.OnGestureListener, GestureDete
     }
 
     private boolean checkLinkTapped(float x, float y) {
-        PdfFile pdfFile = pdfView.pdfFile;
+        AbsPdfFile pdfFile = pdfView.pdfFile;
         if (pdfFile == null) {
             return false;
         }
@@ -217,7 +217,7 @@ class DragPinchManager implements GestureDetector.OnGestureListener, GestureDete
         int yOffset = (int) pdfView.getCurrentYOffset();
 
         float minX, minY;
-        PdfFile pdfFile = pdfView.pdfFile;
+        AbsPdfFile pdfFile = pdfView.pdfFile;
         if (pdfView.isSwipeVertical()) {
             minX = -(pdfView.toCurrentScale(pdfFile.getMaxPageWidth()) - pdfView.getWidth());
             minY = -(pdfFile.getDocLen(pdfView.getZoom()) - pdfView.getHeight());
@@ -235,7 +235,7 @@ class DragPinchManager implements GestureDetector.OnGestureListener, GestureDete
         int xOffset = (int) pdfView.getCurrentXOffset();
         int yOffset = (int) pdfView.getCurrentYOffset();
 
-        PdfFile pdfFile = pdfView.pdfFile;
+        AbsPdfFile pdfFile = pdfView.pdfFile;
 
         float pageStart = -pdfFile.getPageOffset(pdfView.getCurrentPage(), pdfView.getZoom());
         float pageEnd = pageStart - pdfFile.getPageLength(pdfView.getCurrentPage(), pdfView.getZoom());
