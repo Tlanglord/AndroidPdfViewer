@@ -21,9 +21,6 @@ import android.graphics.pdf.PdfRenderer;
 import android.os.MemoryFile;
 import android.os.ParcelFileDescriptor;
 
-import com.shockwave.pdfium.PdfDocument;
-import com.shockwave.pdfium.PdfiumCore;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,11 +33,6 @@ public class ByteArraySource implements DocumentSource {
 
     public ByteArraySource(byte[] data) {
         this.data = data;
-    }
-
-    @Override
-    public PdfDocument createDocument(Context context, PdfiumCore core, String password) throws IOException {
-        return core.newDocument(data, password);
     }
 
     @Override

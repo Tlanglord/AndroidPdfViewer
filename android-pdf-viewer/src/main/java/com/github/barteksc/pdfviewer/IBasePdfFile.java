@@ -3,11 +3,12 @@ package com.github.barteksc.pdfviewer;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.pdf.PdfDocument;
+import android.util.Size;
+import android.util.SizeF;
 
 import com.github.barteksc.pdfviewer.exception.PageRenderingException;
-import com.shockwave.pdfium.PdfDocument;
-import com.shockwave.pdfium.util.Size;
-import com.shockwave.pdfium.util.SizeF;
+
 
 import java.util.List;
 
@@ -48,11 +49,11 @@ public interface IBasePdfFile {
 
     public void renderPageBitmap(Bitmap bitmap, int pageIndex, Rect bounds, boolean annotationRendering);
 
-    public PdfDocument.Meta getMetaData();
+    public Meta getMetaData();
 
-    public List<PdfDocument.Bookmark> getBookmarks();
+    public List<Bookmark> getBookmarks();
 
-    public List<PdfDocument.Link> getPageLinks(int pageIndex);
+    public List<Link> getPageLinks(int pageIndex);
 
     public RectF mapRectToDevice(int pageIndex, int startX, int startY, int sizeX, int sizeY, RectF rect);
 

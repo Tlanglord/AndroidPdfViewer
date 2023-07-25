@@ -35,13 +35,13 @@ public class DefaultLinkHandler implements LinkHandler {
 
     @Override
     public void handleLinkEvent(LinkTapEvent event) {
-        String uri = event.getLink().getUri();
-        Integer page = event.getLink().getDestPageIdx();
-        if (uri != null && !uri.isEmpty()) {
-            handleUri(uri);
-        } else if (page != null) {
-            handlePage(page);
-        }
+//        String uri = event.getLink().getUri();
+//        Integer page = event.getLink().getDestPageIdx();
+//        if (uri != null && !uri.isEmpty()) {
+//            handleUri(uri);
+//        } else if (page != null) {
+//            handlePage(page);
+//        }
     }
 
     private void handleUri(String uri) {

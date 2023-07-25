@@ -3,15 +3,16 @@ package com.github.barteksc.pdfviewer;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.pdf.PdfDocument;
 import android.graphics.pdf.PdfRenderer;
+import android.util.Size;
+import android.util.SizeF;
 import android.util.SparseBooleanArray;
 
 import com.github.barteksc.pdfviewer.exception.PageRenderingException;
 import com.github.barteksc.pdfviewer.util.FitPolicy;
 import com.github.barteksc.pdfviewer.util.PageSizeCalculator;
-import com.shockwave.pdfium.PdfDocument;
-import com.shockwave.pdfium.util.Size;
-import com.shockwave.pdfium.util.SizeF;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -309,17 +310,17 @@ public class NativePdfFile extends AbsPdfFile {
     }
 
     @Override
-    public PdfDocument.Meta getMetaData() {
-        return new PdfDocument.Meta();
+    public Meta getMetaData() {
+        return new Meta();
     }
 
     @Override
-    public List<PdfDocument.Bookmark> getBookmarks() {
+    public List<Bookmark> getBookmarks() {
         return new ArrayList<>();
     }
 
     @Override
-    public List<PdfDocument.Link> getPageLinks(int pageIndex) {
+    public List<Link> getPageLinks(int pageIndex) {
         return new ArrayList<>();
     }
 

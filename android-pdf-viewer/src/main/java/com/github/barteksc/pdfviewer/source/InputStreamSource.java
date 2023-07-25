@@ -19,13 +19,8 @@ import android.content.Context;
 import android.graphics.pdf.PdfRenderer;
 import android.os.ParcelFileDescriptor;
 
-import com.github.barteksc.pdfviewer.util.Util;
-import com.shockwave.pdfium.PdfDocument;
-import com.shockwave.pdfium.PdfiumCore;
-
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 public class InputStreamSource implements DocumentSource {
@@ -34,11 +29,6 @@ public class InputStreamSource implements DocumentSource {
 
     public InputStreamSource(InputStream inputStream) {
         this.inputStream = inputStream;
-    }
-
-    @Override
-    public PdfDocument createDocument(Context context, PdfiumCore core, String password) throws IOException {
-        return core.newDocument(Util.toByteArray(inputStream), password);
     }
 
     @Override

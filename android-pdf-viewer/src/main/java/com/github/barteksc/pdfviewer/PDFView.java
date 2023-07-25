@@ -28,12 +28,15 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.HandlerThread;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.Size;
+import android.util.SizeF;
 import android.widget.RelativeLayout;
 
 import com.github.barteksc.pdfviewer.exception.PageRenderingException;
@@ -62,10 +65,6 @@ import com.github.barteksc.pdfviewer.util.FitPolicy;
 import com.github.barteksc.pdfviewer.util.MathUtils;
 import com.github.barteksc.pdfviewer.util.SnapEdge;
 import com.github.barteksc.pdfviewer.util.Util;
-import com.shockwave.pdfium.PdfDocument;
-import com.shockwave.pdfium.PdfiumCore;
-import com.shockwave.pdfium.util.Size;
-import com.shockwave.pdfium.util.SizeF;
 
 import java.io.File;
 import java.io.InputStream;
@@ -220,7 +219,6 @@ public class PDFView extends RelativeLayout {
     /**
      * Pdfium core for loading and rendering PDFs
      */
-    private PdfiumCore pdfiumCore;
 
     private ScrollHandle scrollHandle;
 
@@ -318,7 +316,6 @@ public class PDFView extends RelativeLayout {
         debugPaint = new Paint();
         debugPaint.setStyle(Style.STROKE);
 
-        pdfiumCore = new PdfiumCore(context);
         setWillNotDraw(false);
     }
 
@@ -334,11 +331,8 @@ public class PDFView extends RelativeLayout {
 
         recycled = false;
         // Start decoding document
-        if (useNativeRender) {
-            decodingAsyncTask = new NativeDecodingAsyncTask(docSource, password, userPages, this);
-        } else {
-            decodingAsyncTask = new DecodingAsyncTask(docSource, password, userPages, this, pdfiumCore);
-        }
+        decodingAsyncTask = new NativeDecodingAsyncTask(docSource, password, userPages, this);
+
         decodingAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
@@ -1334,7 +1328,7 @@ public class PDFView extends RelativeLayout {
     /**
      * Returns null if document is not loaded
      */
-    public PdfDocument.Meta getDocumentMeta() {
+    public Meta getDocumentMeta() {
         if (pdfFile == null) {
             return null;
         }
@@ -1344,7 +1338,7 @@ public class PDFView extends RelativeLayout {
     /**
      * Will be empty until document is loaded
      */
-    public List<PdfDocument.Bookmark> getTableOfContents() {
+    public List<Bookmark> getTableOfContents() {
         if (pdfFile == null) {
             return Collections.emptyList();
         }
@@ -1354,7 +1348,7 @@ public class PDFView extends RelativeLayout {
     /**
      * Will be empty until document is loaded
      */
-    public List<PdfDocument.Link> getLinks(int page) {
+    public List<Link> getLinks(int page) {
         if (pdfFile == null) {
             return Collections.emptyList();
         }

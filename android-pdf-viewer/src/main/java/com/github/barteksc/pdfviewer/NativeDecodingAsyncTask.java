@@ -2,9 +2,9 @@ package com.github.barteksc.pdfviewer;
 
 import android.graphics.pdf.PdfRenderer;
 import android.os.AsyncTask;
+import android.util.Size;
 
 import com.github.barteksc.pdfviewer.source.DocumentSource;
-import com.shockwave.pdfium.util.Size;
 
 import java.lang.ref.WeakReference;
 

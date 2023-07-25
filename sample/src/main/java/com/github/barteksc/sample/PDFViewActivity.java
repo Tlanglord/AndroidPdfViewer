@@ -36,7 +36,6 @@ import com.github.barteksc.pdfviewer.listener.OnPageErrorListener;
 import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
 import com.github.barteksc.pdfviewer.util.Constants;
 import com.github.barteksc.pdfviewer.util.FitPolicy;
-import com.shockwave.pdfium.PdfDocument;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -45,8 +44,6 @@ import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
-
-import java.util.List;
 
 @EActivity(R.layout.activity_main)
 @OptionsMenu(R.menu.options)
@@ -176,30 +173,30 @@ public class PDFViewActivity extends AppCompatActivity
 
     @Override
     public void loadComplete(int nbPages) {
-        PdfDocument.Meta meta = pdfView.getDocumentMeta();
-        Log.e(TAG, "title = " + meta.getTitle());
-        Log.e(TAG, "author = " + meta.getAuthor());
-        Log.e(TAG, "subject = " + meta.getSubject());
-        Log.e(TAG, "keywords = " + meta.getKeywords());
-        Log.e(TAG, "creator = " + meta.getCreator());
-        Log.e(TAG, "producer = " + meta.getProducer());
-        Log.e(TAG, "creationDate = " + meta.getCreationDate());
-        Log.e(TAG, "modDate = " + meta.getModDate());
-
-        printBookmarksTree(pdfView.getTableOfContents(), "-");
+//        PdfDocument.Meta meta = pdfView.getDocumentMeta();
+//        Log.e(TAG, "title = " + meta.getTitle());
+//        Log.e(TAG, "author = " + meta.getAuthor());
+//        Log.e(TAG, "subject = " + meta.getSubject());
+//        Log.e(TAG, "keywords = " + meta.getKeywords());
+//        Log.e(TAG, "creator = " + meta.getCreator());
+//        Log.e(TAG, "producer = " + meta.getProducer());
+//        Log.e(TAG, "creationDate = " + meta.getCreationDate());
+//        Log.e(TAG, "modDate = " + meta.getModDate());
+//
+//        printBookmarksTree(pdfView.getTableOfContents(), "-");
 
     }
 
-    public void printBookmarksTree(List<PdfDocument.Bookmark> tree, String sep) {
-        for (PdfDocument.Bookmark b : tree) {
-
-            Log.e(TAG, String.format("%s %s, p %d", sep, b.getTitle(), b.getPageIdx()));
-
-            if (b.hasChildren()) {
-                printBookmarksTree(b.getChildren(), sep + "-");
-            }
-        }
-    }
+//    public void printBookmarksTree(List<PdfDocument.Bookmark> tree, String sep) {
+//        for (PdfDocument.Bookmark b : tree) {
+//
+//            Log.e(TAG, String.format("%s %s, p %d", sep, b.getTitle(), b.getPageIdx()));
+//
+//            if (b.hasChildren()) {
+//                printBookmarksTree(b.getChildren(), sep + "-");
+//            }
+//        }
+//    }
 
     /**
      * Listener for response to user permission request
