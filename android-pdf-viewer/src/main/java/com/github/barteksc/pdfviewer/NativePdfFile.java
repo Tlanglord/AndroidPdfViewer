@@ -233,6 +233,10 @@ public class NativePdfFile extends AbsPdfFile {
         return spacing * zoom;
     }
 
+    /**
+     * 获取当前page顶部相对于初始的canvas的偏移
+     *
+     */
     @Override
     public float getPageOffset(int pageIndex, float zoom) {
         int docPage = documentPage(pageIndex);

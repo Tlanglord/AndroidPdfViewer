@@ -124,7 +124,7 @@ public class PDFViewActivity extends AppCompatActivity
                 .onPageError(this)
                 .pageFitPolicy(FitPolicy.WIDTH)
                 .enableUseNativeRender(true)
-                .enablePartDraw(true)
+                .enablePartDraw(false)
                 .load();
     }
 

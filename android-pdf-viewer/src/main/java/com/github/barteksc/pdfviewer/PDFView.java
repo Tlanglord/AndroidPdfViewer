@@ -148,7 +148,7 @@ public class PDFView extends RelativeLayout {
     /**
      * If you picture all the pages side by side in their optimal width,
      * and taking into account the zoom level, the current offset is the
-     * position of the left border of the screen in this big picture
+     * position of the top border of the screen in this big picture
      */
     private float currentYOffset = 0;
 
@@ -685,18 +685,24 @@ public class PDFView extends RelativeLayout {
         // Moves the canvas before drawing any element
         float currentXOffset = this.currentXOffset;
         float currentYOffset = this.currentYOffset;
+        Log.d(TAG, "onDraw: currentXOffset : " + currentXOffset + " , currentYOffset: " + currentYOffset);
+        // 向屏幕顶部移动 。 移动之后绘制page，page绘制的位置紧接着滑动的距离
         canvas.translate(currentXOffset, currentYOffset);
 
+        Log.d(TAG, "onDraw: Draws thumbnails");
         // Draws thumbnails
         for (PagePart part : cacheManager.getThumbnails()) {
             drawPart(canvas, part);
         }
 
         // Draws parts
-        for (PagePart part : cacheManager.getPageParts()) {
-            drawPart(canvas, part);
-            if (callbacks.getOnDrawAll() != null && !onDrawPagesNums.contains(part.getPage())) {
-                onDrawPagesNums.add(part.getPage());
+        if (usePartDraw) {
+            Log.d(TAG, "onDraw: Draws parts");
+            for (PagePart part : cacheManager.getPageParts()) {
+                drawPart(canvas, part);
+                if (callbacks.getOnDrawAll() != null && !onDrawPagesNums.contains(part.getPage())) {
+                    onDrawPagesNums.add(part.getPage());
+                }
             }
         }
 
@@ -708,6 +714,9 @@ public class PDFView extends RelativeLayout {
         drawWithListener(canvas, currentPage, callbacks.getOnDraw());
 
         // Restores the canvas position
+        // 恢复当前的偏移位置，page render向屏幕底部
+        // 不偏移其他元素不显示 ，所有View共用同一个canvas
+        Log.d(TAG, "onDraw: currentXOffset 2 : " + currentXOffset + " , currentYOffset: " + (-currentYOffset));
         canvas.translate(-currentXOffset, -currentYOffset);
     }
 
@@ -748,16 +757,23 @@ public class PDFView extends RelativeLayout {
         SizeF size = pdfFile.getPageSize(part.getPage());
 
         if (swipeVertical) {
+            //pageIndex的基础偏移
             localTranslationY = pdfFile.getPageOffset(part.getPage(), zoom);
+            Log.d(TAG, "drawPart: part.getPage(): " + part.getPage());
             float maxWidth = pdfFile.getMaxPageWidth();
+            //计算相对左侧的偏移x  , 可以简单理解位 (viewWidth-pageSize) /2
+            //需要考虑缩放比例
             localTranslationX = toCurrentScale(maxWidth - size.getWidth()) / 2;
         } else {
             localTranslationX = pdfFile.getPageOffset(part.getPage(), zoom);
             float maxHeight = pdfFile.getMaxPageHeight();
             localTranslationY = toCurrentScale(maxHeight - size.getHeight()) / 2;
         }
+        // 向屏幕底部偏移
+        // [ 0 ] -> [ 1 ] -> [ 2 ]
         canvas.translate(localTranslationX, localTranslationY);
 
+        //图片原始宽、高
         Rect srcRect = new Rect(0, 0, renderedBitmap.getWidth(), renderedBitmap.getHeight());
 
         float offsetX = toCurrentScale(pageRelativeBounds.left * size.getWidth());
@@ -769,17 +785,29 @@ public class PDFView extends RelativeLayout {
         // a possible gap between page parts, especially when
         // the zoom level is high.
         Log.d(TAG, "drawPart: offsetY:" + offsetY + ",  part.getPage : " + part.getPage());
-        Log.d(TAG, "drawPart: localTranslationX:" + localTranslationX + ",  localTranslationY : " + localTranslationY);
+        Log.d(TAG, "drawPart: localTranslationX:" + localTranslationX + ",  localTranslationY : " + localTranslationY + " , currentYOffset: " + currentYOffset);
         RectF dstRect = new RectF((int) offsetX, (int) offsetY, (int) (offsetX + width), (int) (offsetY + height));
-
+        Log.d(TAG, "drawPart: dstRect:" + dstRect + " , height: " + height);
         // Check if bitmap is in the screen
+        // 已经绘制 && 不在屏上 ，直接 translate
         float translationX = currentXOffset + localTranslationX;
         float translationY = currentYOffset + localTranslationY;
-        if (translationX + dstRect.left >= getWidth() || translationX + dstRect.right <= 0 ||
-                translationY + dstRect.top >= getHeight() || translationY + dstRect.bottom <= 0) {
+        boolean leftM = translationX + dstRect.left >= getWidth();
+        boolean rightM = translationX + dstRect.right <= 0;
+        boolean topM = translationY + dstRect.top >= getHeight(); // localTranslationY 在 currentYOffset+getHeight 的后面
+        boolean bottomM = translationY + dstRect.bottom <= 0; // localTranslationY + page.height 在 currentYOffset 的前面
+
+
+        Log.d(TAG, "drawPart: leftM : " + leftM + ", rightM : " + rightM + ", topM : " + topM + ", bottomM : " + bottomM);
+
+        if (leftM || rightM ||
+                topM || bottomM) {
+            Log.d(TAG, "drawPart: translate ");
             canvas.translate(-localTranslationX, -localTranslationY);
             return;
         }
+
+        Log.d(TAG, "drawPart: drawBitmap : " + part.getPage());
 
         canvas.drawBitmap(renderedBitmap, srcRect, dstRect, paint);
 
@@ -799,6 +827,7 @@ public class PDFView extends RelativeLayout {
      * the current page displayed
      */
     public void loadPages() {
+        Log.d(TAG, "loadPages: ");
         if (pdfFile == null || renderingHandler == null) {
             return;
         }
@@ -824,6 +853,7 @@ public class PDFView extends RelativeLayout {
         if (!renderingHandlerThread.isAlive()) {
             renderingHandlerThread.start();
         }
+        // renderingHandlerThread looper
         renderingHandler = new RenderingHandler(renderingHandlerThread.getLooper(), this);
         renderingHandler.start();
 
@@ -970,6 +1000,7 @@ public class PDFView extends RelativeLayout {
     }
 
     void loadPageByOffset() {
+        Log.d(TAG, "loadPageByOffset: ");
         if (0 == pdfFile.getPagesCount()) {
             return;
         }
@@ -1088,6 +1119,7 @@ public class PDFView extends RelativeLayout {
      * @see #moveTo(float, float)
      */
     public void moveRelativeTo(float dx, float dy) {
+        Log.d(TAG, "moveRelativeTo: dx: " + dx + " , dy: " + dy);
         moveTo(currentXOffset + dx, currentYOffset + dy);
     }
 

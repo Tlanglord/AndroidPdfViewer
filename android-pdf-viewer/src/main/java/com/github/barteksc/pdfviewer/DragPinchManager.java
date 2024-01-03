@@ -17,6 +17,7 @@ package com.github.barteksc.pdfviewer;
 
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -36,6 +37,8 @@ import static com.github.barteksc.pdfviewer.util.Constants.Pinch.MINIMUM_ZOOM;
  * set its zoom track user actions.
  */
 class DragPinchManager implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener, ScaleGestureDetector.OnScaleGestureListener, View.OnTouchListener {
+
+    private static final String TAG = "DragPinchManager";
 
     private PDFView pdfView;
     private AnimationManager animationManager;
@@ -176,8 +179,10 @@ class DragPinchManager implements GestureDetector.OnGestureListener, GestureDete
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        Log.d(TAG, "onScroll: ");
         scrolling = true;
         if (pdfView.isZooming() || pdfView.isSwipeEnabled()) {
+            Log.d(TAG, "onScroll: " + distanceX + " " + distanceY);
             pdfView.moveRelativeTo(-distanceX, -distanceY);
         }
         if (!scaling || pdfView.doRenderDuringScale()) {
@@ -187,6 +192,7 @@ class DragPinchManager implements GestureDetector.OnGestureListener, GestureDete
     }
 
     private void onScrollEnd(MotionEvent event) {
+        Log.d(TAG, "onScrollEnd: ");
         pdfView.loadPages();
         hideHandle();
         if (!animationManager.isFlinging()) {

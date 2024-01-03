@@ -104,6 +104,7 @@ class RenderingHandler extends Handler {
         int w = Math.round(renderingTask.width);
         int h = Math.round(renderingTask.height);
 
+        //   pdfFile.pageHasError(renderingTask.page) ， 打开失败 ，直接返回null
         if (w == 0 || h == 0 || pdfFile.pageHasError(renderingTask.page)) {
             return null;
         }
@@ -119,8 +120,11 @@ class RenderingHandler extends Handler {
             Log.e(TAG, "Cannot create bitmap", e);
             return null;
         }
+        Log.d(TAG, "proceed 1: " + renderingTask.bounds);
         calculateBounds(w, h, renderingTask.bounds);
+        Log.d(TAG, "proceed 2: " + renderingTask.bounds);
 
+        // 具体渲染
         pdfFile.renderPageBitmap(render, renderingTask.page, roundedRenderBounds, renderingTask.annotationRendering);
 
         return new PagePart(renderingTask.page, render,

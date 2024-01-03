@@ -16,6 +16,7 @@
 package com.github.barteksc.pdfviewer;
 
 import android.graphics.RectF;
+import android.util.Log;
 
 import com.github.barteksc.pdfviewer.util.Constants;
 import com.github.barteksc.pdfviewer.util.MathUtils;
@@ -29,6 +30,7 @@ import static com.github.barteksc.pdfviewer.util.Constants.Cache.CACHE_SIZE;
 import static com.github.barteksc.pdfviewer.util.Constants.PRELOAD_OFFSET;
 
 class PagesLoader {
+    private static final String TAG = "PagesLoader";
 
     private PDFView pdfView;
     private int cacheOrder;
@@ -227,6 +229,7 @@ class PagesLoader {
     }
 
     private void loadVisible() {
+        Log.d(TAG, "loadVisible: ");
         int parts = 0;
         float scaledPreloadOffset = preloadOffset;
         float firstXOffset = -xOffset + scaledPreloadOffset;

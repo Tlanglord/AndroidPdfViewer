@@ -21,6 +21,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.graphics.PointF;
+import android.util.Log;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.OverScroller;
 
@@ -32,6 +33,8 @@ import android.widget.OverScroller;
  * of each animation update.
  */
 class AnimationManager {
+
+    private static final String TAG = "AnimationManager";
 
     private PDFView pdfView;
 
@@ -154,12 +157,14 @@ class AnimationManager {
         @Override
         public void onAnimationUpdate(ValueAnimator animation) {
             float offset = (Float) animation.getAnimatedValue();
+            Log.d(TAG, "onAnimationUpdate: offset = " + offset);
             pdfView.moveTo(pdfView.getCurrentXOffset(), offset);
             pdfView.loadPageByOffset();
         }
 
         @Override
         public void onAnimationCancel(Animator animation) {
+            Log.d(TAG, "onAnimationCancel: ");
             pdfView.loadPages();
             pageFlinging = false;
             hideHandle();
@@ -167,6 +172,7 @@ class AnimationManager {
 
         @Override
         public void onAnimationEnd(Animator animation) {
+            Log.d(TAG, "onAnimationEnd: ");
             pdfView.loadPages();
             pageFlinging = false;
             hideHandle();

@@ -135,6 +135,9 @@ class PdfFile extends AbsPdfFile{
         return pagesCount;
     }
 
+    /**
+     * pageSizes记录的缩放的页数
+     */
     public SizeF getPageSize(int pageIndex) {
         int docPage = documentPage(pageIndex);
         if (docPage < 0) {
@@ -192,6 +195,9 @@ class PdfFile extends AbsPdfFile{
         documentLength = length;
     }
 
+    /**
+     * 计算每页的偏移
+     */
     private void preparePagesOffset() {
         pageOffsets.clear();
         float offset = 0;
@@ -354,6 +360,9 @@ class PdfFile extends AbsPdfFile{
         return userPage;
     }
 
+    /**
+     * 判断有效的页数
+     */
     public int documentPage(int userPage) {
         int documentPage = userPage;
         if (originalUserPages != null) {
