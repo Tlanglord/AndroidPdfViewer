@@ -255,8 +255,8 @@ public class PDFView extends RelativeLayout {
      */
     private boolean enableAntialiasing = true;
     private PaintFlagsDrawFilter antialiasFilter = new PaintFlagsDrawFilter(0,
-                                                                            Paint.ANTI_ALIAS_FLAG |
-                                                                                    Paint.FILTER_BITMAP_FLAG
+            Paint.ANTI_ALIAS_FLAG |
+                    Paint.FILTER_BITMAP_FLAG
     );
 
     /**
@@ -690,7 +690,6 @@ public class PDFView extends RelativeLayout {
         // Draws thumbnails
         for (PagePart part : cacheManager.getThumbnails()) {
             drawPart(canvas, part);
-
         }
 
         // Draws parts
@@ -769,6 +768,8 @@ public class PDFView extends RelativeLayout {
         // If we use float values for this rectangle, there will be
         // a possible gap between page parts, especially when
         // the zoom level is high.
+        Log.d(TAG, "drawPart: offsetY:" + offsetY + ",  part.getPage : " + part.getPage());
+        Log.d(TAG, "drawPart: localTranslationX:" + localTranslationX + ",  localTranslationY : " + localTranslationY);
         RectF dstRect = new RectF((int) offsetX, (int) offsetY, (int) (offsetX + width), (int) (offsetY + height));
 
         // Check if bitmap is in the screen
@@ -1142,7 +1143,7 @@ public class PDFView extends RelativeLayout {
             return;
         }
         zoomTo(getWidth() / pdfFile.getPageSize(page)
-                                   .getWidth());
+                .getWidth());
         jumpTo(page);
     }
 

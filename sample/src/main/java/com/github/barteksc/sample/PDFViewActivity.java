@@ -22,10 +22,12 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.provider.OpenableColumns;
+
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.util.Log;
 import android.widget.Toast;
 
@@ -93,7 +95,7 @@ public class PDFViewActivity extends AppCompatActivity
         } catch (ActivityNotFoundException e) {
             //alert user that file manager not working
             Toast.makeText(this, R.string.toast_pick_file_error, Toast.LENGTH_SHORT)
-                 .show();
+                    .show();
         }
     }
 
@@ -113,30 +115,31 @@ public class PDFViewActivity extends AppCompatActivity
 
         Constants.THUMBNAIL_RATIO = 1F;
         pdfView.fromAsset(assetFileName)
-               .defaultPage(pageNumber)
-               .onPageChange(this)
-               .enableAnnotationRendering(false)
-               .onLoad(this)
-               .scrollHandle(new DefaultScrollHandle(this))
-               .spacing(10) // in dp
-               .onPageError(this)
-               .pageFitPolicy(FitPolicy.WIDTH)
-               .enableUseNativeRender(true)
-               .load();
+                .defaultPage(pageNumber)
+                .onPageChange(this)
+                .enableAnnotationRendering(false)
+                .onLoad(this)
+                .scrollHandle(new DefaultScrollHandle(this))
+                .spacing(10) // in dp
+                .onPageError(this)
+                .pageFitPolicy(FitPolicy.WIDTH)
+                .enableUseNativeRender(true)
+                .enablePartDraw(true)
+                .load();
     }
 
     private void displayFromUri(Uri uri) {
         pdfFileName = getFileName(uri);
 
         pdfView.fromUri(uri)
-               .defaultPage(pageNumber)
-               .onPageChange(this)
-               .enableAnnotationRendering(true)
-               .onLoad(this)
-               .scrollHandle(new DefaultScrollHandle(this))
-               .spacing(10) // in dp
-               .onPageError(this)
-               .load();
+                .defaultPage(pageNumber)
+                .onPageChange(this)
+                .enableAnnotationRendering(true)
+                .onLoad(this)
+                .scrollHandle(new DefaultScrollHandle(this))
+                .spacing(10) // in dp
+                .onPageError(this)
+                .load();
     }
 
     @OnActivityResult(REQUEST_CODE)
@@ -156,7 +159,7 @@ public class PDFViewActivity extends AppCompatActivity
     public String getFileName(Uri uri) {
         String result = null;
         if (uri.getScheme()
-               .equals("content")) {
+                .equals("content")) {
             Cursor cursor = getContentResolver().query(uri, null, null, null, null);
             try {
                 if (cursor != null && cursor.moveToFirst()) {
