@@ -123,9 +123,16 @@ class PagesLoader {
         float offsetFirst = pdfView.isSwipeVertical() ? fixedFirstYOffset : fixedFirstXOffset;
         float offsetLast = pdfView.isSwipeVertical() ? fixedLastYOffset : fixedLastXOffset;
 
+        Log.d(TAG, "getRenderRangeList: offsetFirst = " + offsetFirst + " , offsetLast = " + offsetLast);
+
         int firstPage = pdfView.pdfFile.getPageAtOffset(offsetFirst, pdfView.getZoom());
         int lastPage = pdfView.pdfFile.getPageAtOffset(offsetLast, pdfView.getZoom());
+
+        Log.d(TAG, "getRenderRangeList: firstPage = " + firstPage + " , lastPage = " + lastPage);
+
         int pageCount = lastPage - firstPage + 1;
+
+        Log.d(TAG, "getRenderRangeList: pageCount = " + pageCount);
 
         List<RenderRange> renderRanges = new LinkedList<>();
 
@@ -231,16 +238,25 @@ class PagesLoader {
     private void loadVisible() {
         Log.d(TAG, "loadVisible: ");
         int parts = 0;
+        // preloadOffset = 40px
         float scaledPreloadOffset = preloadOffset;
         float firstXOffset = -xOffset + scaledPreloadOffset;
         float lastXOffset = -xOffset - pdfView.getWidth() - scaledPreloadOffset;
         float firstYOffset = -yOffset + scaledPreloadOffset;
         float lastYOffset = -yOffset - pdfView.getHeight() - scaledPreloadOffset;
 
+        if (pdfView.isSwipeVertical()) {
+            // +40px 间距
+            Log.d(TAG, "loadVisible: pdfView.getHeight() = "+ pdfView.getHeight());
+            Log.d(TAG, "loadVisible: firstYOffset = " + firstYOffset + " , lastYOffset = " + lastYOffset);
+        } else {
+            Log.d(TAG, "loadVisible: firstXOffset = " + firstXOffset + " , lastXOffset = " + lastXOffset);
+        }
+
         List<RenderRange> rangeList = getRenderRangeList(firstXOffset, firstYOffset, lastXOffset, lastYOffset);
 
         for (RenderRange range : rangeList) {
-            Log.d(TAG, "loadVisible: loadThumbnail : page = " + range.page + "");
+            Log.d(TAG, "loadVisible: loadThumbnail : page = " + range.page + "" + " , range = " + range);
             loadThumbnail(range.page);
         }
 
@@ -264,6 +280,16 @@ class PagesLoader {
 
     }
 
+    /**
+     * 加载瓦片
+     * @param page
+     * @param firstRow
+     * @param lastRow
+     * @param firstCol
+     * @param lastCol
+     * @param nbOfPartsLoadable
+     * @return
+     */
     private int loadPage(int page, int firstRow, int lastRow, int firstCol, int lastCol, int nbOfPartsLoadable) {
         int loaded = 0;
         for (int row = firstRow; row <= lastRow; row++) {
@@ -341,6 +367,8 @@ class PagesLoader {
         cacheOrder = 1;
         xOffset = -MathUtils.max(pdfView.getCurrentXOffset(), 0);
         yOffset = -MathUtils.max(pdfView.getCurrentYOffset(), 0);
+
+        Log.d(TAG, "loadPages: xOffset = " + xOffset + " , yOffset = " + yOffset);
 
         loadVisible();
     }

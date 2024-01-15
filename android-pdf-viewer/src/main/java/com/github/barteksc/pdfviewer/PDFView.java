@@ -527,6 +527,7 @@ public class PDFView extends RelativeLayout {
     @Override
     public void computeScroll() {
         super.computeScroll();
+        Log.d(TAG, "computeScroll: ");
         if (isInEditMode()) {
             return;
         }
