@@ -35,6 +35,8 @@ import static com.github.barteksc.pdfviewer.util.Constants.Pinch.MINIMUM_ZOOM;
 /**
  * This Manager takes care of moving the PDFView,
  * set its zoom track user actions.
+ *
+ * 处理拖拽和缩放
  */
 class DragPinchManager implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener, ScaleGestureDetector.OnScaleGestureListener, View.OnTouchListener {
 

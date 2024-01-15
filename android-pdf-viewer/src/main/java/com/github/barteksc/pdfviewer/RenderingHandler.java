@@ -73,9 +73,11 @@ class RenderingHandler extends Handler {
     public void handleMessage(Message message) {
         RenderingTask task = (RenderingTask) message.obj;
         try {
+            // 子线程执行 #proceed
             final PagePart part = proceed(task);
             if (part != null) {
                 if (running) {
+                    // 切换到主线程
                     pdfView.post(new Runnable() {
                         @Override
                         public void run() {

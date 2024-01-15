@@ -240,6 +240,7 @@ class PagesLoader {
         List<RenderRange> rangeList = getRenderRangeList(firstXOffset, firstYOffset, lastXOffset, lastYOffset);
 
         for (RenderRange range : rangeList) {
+            Log.d(TAG, "loadVisible: loadThumbnail : page = " + range.page + "");
             loadThumbnail(range.page);
         }
 
@@ -321,6 +322,7 @@ class PagesLoader {
         SizeF pageSize = pdfView.pdfFile.getPageSize(page);
         float thumbnailWidth = pageSize.getWidth() * Constants.THUMBNAIL_RATIO;
         float thumbnailHeight = pageSize.getHeight() * Constants.THUMBNAIL_RATIO;
+        // 没有缓存
         if (!pdfView.cacheManager.containsThumbnail(page, thumbnailRect)) {
             pdfView.renderingHandler.addRenderingTask(
                     page,

@@ -16,6 +16,8 @@
 package com.github.barteksc.pdfviewer;
 
 import android.graphics.RectF;
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 
 import com.github.barteksc.pdfviewer.model.PagePart;
@@ -30,6 +32,8 @@ import static com.github.barteksc.pdfviewer.util.Constants.Cache.CACHE_SIZE;
 import static com.github.barteksc.pdfviewer.util.Constants.Cache.THUMBNAILS_CACHE_SIZE;
 
 class CacheManager {
+
+    private static final String TAG = "CacheManager";
 
     private final PriorityQueue<PagePart> passiveCache;
 
@@ -65,6 +69,7 @@ class CacheManager {
     }
 
     private void makeAFreeSpace() {
+        Log.d(TAG, "makeAFreeSpace: ");
         synchronized (passiveActiveLock) {
             while ((activeCache.size() + passiveCache.size()) >= CACHE_SIZE &&
                     !passiveCache.isEmpty()) {

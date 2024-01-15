@@ -24,6 +24,9 @@ import com.shockwave.pdfium.util.Size;
 
 import java.lang.ref.WeakReference;
 
+/**
+ * 打开pdf文件
+ */
 class DecodingAsyncTask extends AsyncTask<Void, Void, Throwable> {
 
     private boolean cancelled;

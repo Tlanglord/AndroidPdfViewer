@@ -18,6 +18,8 @@ import java.util.List;
 
 /**
  * Created by dongqiangqiang on 2023/7/25
+ * <p>
+ * 使用PdfRenderer方式打开PDF文件
  */
 public class NativePdfFile extends AbsPdfFile {
 
@@ -112,10 +114,10 @@ public class NativePdfFile extends AbsPdfFile {
 
         pageSizes.clear();
         PageSizeCalculator calculator = new PageSizeCalculator(pageFitPolicy,
-                                                               originalMaxWidthPageSize,
-                                                               originalMaxHeightPageSize,
-                                                               viewSize,
-                                                               fitEachPage
+                originalMaxWidthPageSize,
+                originalMaxHeightPageSize,
+                viewSize,
+                fitEachPage
         );
         maxWidthPageSize = calculator.getOptimalMaxWidthPageSize();
         maxHeightPageSize = calculator.getOptimalMaxHeightPageSize();
@@ -135,8 +137,8 @@ public class NativePdfFile extends AbsPdfFile {
         for (int i = 0; i < getPagesCount(); i++) {
             SizeF pageSize = pageSizes.get(i);
             float spacing = Math.max(0,
-                                     isVertical ? viewSize.getHeight() - pageSize.getHeight() :
-                                             viewSize.getWidth() - pageSize.getWidth()
+                    isVertical ? viewSize.getHeight() - pageSize.getHeight() :
+                            viewSize.getWidth() - pageSize.getWidth()
             );
             if (i < getPagesCount() - 1) {
                 spacing += spacingPx;
@@ -235,7 +237,6 @@ public class NativePdfFile extends AbsPdfFile {
 
     /**
      * 获取当前page顶部相对于初始的canvas的偏移
-     *
      */
     @Override
     public float getPageOffset(int pageIndex, float zoom) {

@@ -375,6 +375,9 @@ public class PDFView extends RelativeLayout {
     }
 
     void showPage(int pageNb) {
+
+        Log.d(TAG, "showPage: pageNb: " + pageNb);
+
         if (recycled) {
             return;
         }
@@ -841,7 +844,9 @@ public class PDFView extends RelativeLayout {
 
 
         pagesLoader.enablePartDraw(usePartDraw && !useNativeRender);
+        // 加载page -> loadVisible -> loadThumbnail -> addRenderingTask -> proceed -> onBitmapRendered -> cache -> draw
         pagesLoader.loadPages();
+        //兼容有缓存的情况刷新
         redraw();
     }
 
@@ -902,11 +907,15 @@ public class PDFView extends RelativeLayout {
             callbacks.callOnRender(pdfFile.getPagesCount());
         }
 
+        // 缓存
         if (part.isThumbnail()) {
+            // 缩略图
             cacheManager.cacheThumbnail(part);
         } else {
+            // part
             cacheManager.cachePart(part);
         }
+        // 重新绘制
         redraw();
     }
 

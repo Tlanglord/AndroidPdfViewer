@@ -10,6 +10,7 @@ import java.lang.ref.WeakReference;
 
 /**
  * Created by dongqiangqiang on 2023/7/25
+ * 使用PdfRenderer方式打开PDF文件
  */
 class NativeDecodingAsyncTask extends AsyncTask<Void, Void, Throwable> {
 

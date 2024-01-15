@@ -31,6 +31,9 @@ import com.shockwave.pdfium.util.SizeF;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * pdfium 打开PDF文件
+ */
 class PdfFile extends AbsPdfFile{
 
     private static final Object lock = new Object();

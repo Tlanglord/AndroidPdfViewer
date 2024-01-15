@@ -13,6 +13,8 @@ import java.util.List;
 
 /**
  * Created by dongqiangqiang on 2023/7/25
+ *
+ * PDFFile 抽象
  */
 public interface IBasePdfFile {
 
