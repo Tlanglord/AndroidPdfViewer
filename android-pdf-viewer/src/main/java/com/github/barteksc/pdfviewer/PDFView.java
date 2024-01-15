@@ -741,6 +741,9 @@ public class PDFView extends RelativeLayout {
 
     /**
      * Draw a given PagePart on the canvas
+     * translate后在canvas上绘制，然后translate退回去，造成滑动的假象
+     * 对于已经translate后绘制的元素，再次translate不会影响到已经绘制的元素，但是会影响到未绘制的元素
+     *
      */
     private void drawPart(Canvas canvas, PagePart part) {
         // Can seem strange, but avoid lot of calls
