@@ -41,30 +41,42 @@ class PdfFile extends AbsPdfFile{
     private PdfiumCore pdfiumCore;
     private int pagesCount = 0;
     /** Original page sizes */
+    // 原始page的大小
     private List<Size> originalPageSizes = new ArrayList<>();
     /** Scaled page sizes */
+    // 根据pageFitPolicy计算的缩放后的page大小
     private List<SizeF> pageSizes = new ArrayList<>();
     /** Opened pages with indicator whether opening was successful */
+    // 打开的page
     private SparseBooleanArray openedPages = new SparseBooleanArray();
     /** Page with maximum width */
+    // 原始最大宽度的page
     private Size originalMaxWidthPageSize = new Size(0, 0);
     /** Page with maximum height */
+    // 原始最大高度的page
     private Size originalMaxHeightPageSize = new Size(0, 0);
     /** Scaled page with maximum height */
+    // 缩放后最大高度的page
     private SizeF maxHeightPageSize = new SizeF(0, 0);
     /** Scaled page with maximum width */
+    // 缩放后最大宽度的page
     private SizeF maxWidthPageSize = new SizeF(0, 0);
     /** True if scrolling is vertical, else it's horizontal */
+    // 是否是垂直滚动
     private boolean isVertical;
     /** Fixed spacing between pages in pixels */
+    // page之间的间距
     private int spacingPx;
     /** Calculate spacing automatically so each page fits on it's own in the center of the view */
+    // 是否自动计算page之间的间距
     private boolean autoSpacing;
     /** Calculated offsets for pages */
+    // 计算的page的偏移
     private List<Float> pageOffsets = new ArrayList<>();
     /** Calculated auto spacing for pages */
     private List<Float> pageSpacing = new ArrayList<>();
     /** Calculated document length (width or height, depending on swipe mode) */
+    //  计算的文档长度
     private float documentLength = 0;
     private final FitPolicy pageFitPolicy;
     /**
@@ -100,9 +112,11 @@ class PdfFile extends AbsPdfFile{
 
         for (int i = 0; i < pagesCount; i++) {
             Size pageSize = pdfiumCore.getPageSize(pdfDocument, documentPage(i));
+            // 计算最大宽度
             if (pageSize.getWidth() > originalMaxWidthPageSize.getWidth()) {
                 originalMaxWidthPageSize = pageSize;
             }
+            // 最大高度的pageSize
             if (pageSize.getHeight() > originalMaxHeightPageSize.getHeight()) {
                 originalMaxHeightPageSize = pageSize;
             }
@@ -180,10 +194,14 @@ class PdfFile extends AbsPdfFile{
             if (i < getPagesCount() - 1) {
                 spacing += spacingPx;
             }
+            // 自动spacing，不足viewSize.getHeight()的距离用spacing进行补充
             pageSpacing.add(spacing);
         }
     }
 
+    /**
+     * 文档长度基于缩放后的page大小
+     */
     private void prepareDocLen() {
         float length = 0;
         for (int i = 0; i < getPagesCount(); i++) {
@@ -208,6 +226,8 @@ class PdfFile extends AbsPdfFile{
             SizeF pageSize = pageSizes.get(i);
             float size = isVertical ? pageSize.getHeight() : pageSize.getWidth();
             if (autoSpacing) {
+
+                // 居中展示？？ 所以/2
                 offset += pageSpacing.get(i) / 2f;
                 if (i == 0) {
                     offset -= spacingPx / 2f;
@@ -215,8 +235,10 @@ class PdfFile extends AbsPdfFile{
                     offset += spacingPx / 2f;
                 }
                 pageOffsets.add(offset);
-                offset += size + pageSpacing.get(i) / 2f;
+                offset += size + pageSpacing.get(i) / 2f; // 计算一整页的偏移
             } else {
+                // 第一页offset等于0 ，后面的offset = old_offset + size + spacingPx ， old_offset=0
+                // 第二页offset等于 ， offset = old_offset + size + spacingPx ，old_offset 等于第一页的offset结果值
                 pageOffsets.add(offset);
                 offset += size + spacingPx;
             }
