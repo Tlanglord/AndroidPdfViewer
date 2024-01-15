@@ -1138,13 +1138,34 @@ public class PDFView extends RelativeLayout {
      * @param zoom  The zoom level.
      * @param pivot The point on the screen that should stays.
      */
+    /**
+     * float dzoom = zoom / this.zoom;：计算出新的缩放比例与当前缩放比例的比值（dzoom）。
+     *
+     * zoomTo(zoom);：调用zoomTo方法，将PDF文件缩放到新的比例。
+     *
+     * float baseX = currentXOffset * dzoom; 和 float baseY = currentYOffset * dzoom;：计算出在新的缩放比例下，当前的偏移量（currentXOffset和currentYOffset）应该是多少（baseX和baseY）。
+     *
+     * float devPivotX = pivot.x - pivot.x * dzoom; 和 float devPivotY = pivot.y - pivot.y * dzoom;：计算出缩放中心点在新的缩放比例下的偏移量（devPivotX和devPivotY）。
+     *
+     * baseX += devPivotX; 和 baseY += devPivotY;：将计算出的偏移量加到当前的偏移量上。
+     *
+     * moveTo(baseX, baseY);：调用moveTo方法，将PDF文件移动到新的位置。
+     */
     public void zoomCenteredTo(float zoom, PointF pivot) {
         float dzoom = zoom / this.zoom;
         zoomTo(zoom);
+        Log.d(TAG, "zoomCenteredTo: dzoom:" + dzoom);
         float baseX = currentXOffset * dzoom;
         float baseY = currentYOffset * dzoom;
-        baseX += (pivot.x - pivot.x * dzoom);
-        baseY += (pivot.y - pivot.y * dzoom);
+
+        Log.d(TAG, "zoomCenteredTo:  pivot.x:" + pivot.x + ", pivot.y:" + pivot.y);
+
+        float devPivotX = pivot.x - pivot.x * dzoom;
+        float devPivotY = pivot.y - pivot.y * dzoom;
+
+        Log.d(TAG, "zoomCenteredTo: baseX:" + baseX + " , baseY: " + baseY + " , devPivotX: " + devPivotX + " , devPivotY: " + devPivotY);
+        baseX += devPivotX;
+        baseY += devPivotY;
         moveTo(baseX, baseY);
     }
 
